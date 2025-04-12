@@ -10,6 +10,7 @@ jobs:
     runs-on: self-hosted
     outputs:
       testi-obstajajo: ${{ steps.preveri.outputs.obstajajo }}
+
     steps:
       - name: Checkout kode
         uses: actions/checkout@v4
