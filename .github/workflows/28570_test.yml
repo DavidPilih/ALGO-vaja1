@@ -12,7 +12,7 @@ jobs:
       testi-obstajajo: ${{ steps.preveri.outputs.obstajajo }}
     steps:
       - name: Checkout kode
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Popravljeno: checkout kode
 
       - name: Preveri, če obstajajo testne skripte
         id: preveri
@@ -45,7 +45,7 @@ jobs:
 
     steps:
       - name: Checkout kode
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/checkout@v3
 
       - name: Namesti build orodja
         run: sudo apt-get update && sudo apt-get install -y g++
