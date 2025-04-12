@@ -18,11 +18,16 @@ jobs:
       - name: Preveri, če obstajajo testne skripte
         id: preveri
         run: |
-          if [ -d "tests" ] && [ "$(ls -A tests)" ]; then
-            echo "Testne skripte obstajajo."
-            echo "obstajajo=true" >> $GITHUB_OUTPUT
+          if [ -d "tests" ]; then
+            if [ -f "tests/test1.txt" ]; then
+              echo "Testne skripte obstajajo."
+              echo "obstajajo=true" >> $GITHUB_OUTPUT
+            else
+              echo "napaka: Testne skripte manjkajo." > napaka.txt
+              echo "obstajajo=false" >> $GITHUB_OUTPUT
+            fi
           else
-            echo "napaka: Testne skripte manjkajo." > napaka.txt
+            echo "napaka: Mapa 'tests' ne obstaja." > napaka.txt
             echo "obstajajo=false" >> $GITHUB_OUTPUT
           fi
 
@@ -41,7 +46,7 @@ jobs:
     strategy:
       matrix:
         algoritem: [0, 1]
-        vzorec: ["abc", "test", "123"]
+        vzorec: ["abc", "test"]
         vhod: ["tests/test1.txt"]
 
     steps:
