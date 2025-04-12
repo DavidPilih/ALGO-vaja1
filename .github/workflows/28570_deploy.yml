@@ -10,7 +10,7 @@ jobs:
     runs-on: self-hosted
 
     env:
-      IMAGE_NAME: yourdockerhubusername/yourimagename
+      IMAGE_NAME: davidloki/image
       VERSION_TAG: ${{ github.sha }}
 
     steps:
