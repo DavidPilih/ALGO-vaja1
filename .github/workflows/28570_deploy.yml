@@ -1,14 +1,12 @@
-name: Deploy Project
+name: Deploy to DockerHub
 
 on:
-  workflow_run:
-    workflows: ["Test Project"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: self-hosted
 
     env:
