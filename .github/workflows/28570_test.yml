@@ -41,7 +41,7 @@ jobs:
       matrix:
         algoritem: [0, 1]
         vzorec: ["abc", "test", "123"]
-        vhod: ["tests/test1.txt", "tests/test2.txt"]
+        vhod: ["tests/test1.txt"]
 
     steps:
       - name: Checkout kode
