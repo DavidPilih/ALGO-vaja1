@@ -1,0 +1,60 @@
+name: 28570 Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  preveri-teste:
+    runs-on: ubuntu-latest
+    outputs:
+      testi-obstajajo: ${{ steps.preveri.outputs.obstajajo }}
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v3
+
+      - name: Preveri, če obstajajo testne skripte
+        id: preveri
+        run: |
+          if [ -d "tests" ] && [ "$(ls -A tests)" ]; then
+            echo "Testne skripte obstajajo."
+            echo "obstajajo=true" >> $GITHUB_OUTPUT
+          else
+            echo "napaka: Testne skripte manjkajo." > napaka.txt
+            echo "obstajajo=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Shranjevanje napake kot artefakt
+        if: steps.preveri.outputs.obstajajo == 'false'
+        uses: actions/upload-artifact@v3
+        with:
+          name: napaka
+          path: napaka.txt
+
+  izvajanje-testov:
+    needs: preveri-teste
+    if: needs.preveri-teste.outputs.testi-obstajajo == 'true'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        algoritem: [0, 1]
+        vzorec: ["abc", "test", "123"]
+        vhod: ["tests/test1.txt", "tests/test2.txt"]
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v3
+
+      - name: Namesti build orodja
+        run: sudo apt-get update && sudo apt-get install -y g++
+
+      - name: Prevedi program
+        run: g++ -o algoritmi main.cpp
+
+      - name: Zazeni test
+        run: |
+          ./algoritmi "${{ matrix.algoritem }}" "${{ matrix.vzorec }}" "${{ matrix.vhod }}"
+          echo "Izhod za test: alg=${{ matrix.algoritem }} vzorec='${{ matrix.vzorec }}' vhod='${{ matrix.vhod }}'"
+          cat out.txt
