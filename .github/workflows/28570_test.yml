@@ -12,7 +12,7 @@ jobs:
       testi-obstajajo: ${{ steps.preveri.outputs.obstajajo }}
     steps:
       - name: Checkout kode
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Preveri, če obstajajo testne skripte
         id: preveri
@@ -27,7 +27,7 @@ jobs:
 
       - name: Shranjevanje napake kot artefakt
         if: steps.preveri.outputs.obstajajo == 'false'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: napaka
           path: napaka.txt
@@ -45,7 +45,7 @@ jobs:
 
     steps:
       - name: Checkout kode
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Namesti build orodja
         run: sudo apt-get update && sudo apt-get install -y g++
