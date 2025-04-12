@@ -2,8 +2,7 @@ name: 28570 Test
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   preveri-teste:
@@ -15,23 +14,19 @@ jobs:
       - name: Checkout kode
         uses: actions/checkout@v4
 
-      - name: Preveri, če obstajajo testne skripte
+      - name: Preveri testne skripte
         id: preveri
         run: |
-          if [ -d "tests" ]; then
-            if [ -f "tests/test1.txt" ]; then
-              echo "Testne skripte obstajajo."
-              echo "obstajajo=true" >> $GITHUB_OUTPUT
-            else
-              echo "napaka: Testne skripte manjkajo." > napaka.txt
-              echo "obstajajo=false" >> $GITHUB_OUTPUT
-            fi
+          if [ -d "tests" ] && [ -f "tests/test1.txt" ]; then
+            echo "Testne skripte obstajajo."
+            echo "obstajajo=true" >> $GITHUB_OUTPUT
           else
-            echo "napaka: Mapa 'tests' ne obstaja." > napaka.txt
+            echo "napaka: Testne skripte manjkajo." > napaka.txt
             echo "obstajajo=false" >> $GITHUB_OUTPUT
+            exit 1
           fi
 
-      - name: Shranjevanje napake kot artefakt
+      - name: Shranjevanje napake
         if: steps.preveri.outputs.obstajajo == 'false'
         uses: actions/upload-artifact@v4
         with:
@@ -41,8 +36,7 @@ jobs:
   izvajanje-testov:
     needs: preveri-teste
     if: needs.preveri-teste.outputs.testi-obstajajo == 'true'
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted
     strategy:
       matrix:
         algoritem: [0, 1]
@@ -53,7 +47,7 @@ jobs:
       - name: Checkout kode
         uses: actions/checkout@v4
 
-      - name: Namesti build orodja
+      - name: Namesti orodja
         run: sudo apt-get update && sudo apt-get install -y g++
 
       - name: Prevedi program
@@ -62,5 +56,5 @@ jobs:
       - name: Zazeni test
         run: |
           ./algoritmi "${{ matrix.algoritem }}" "${{ matrix.vzorec }}" "${{ matrix.vhod }}"
-          echo "Izhod za test: alg=${{ matrix.algoritem }} vzorec='${{ matrix.vzorec }}' vhod='${{ matrix.vhod }}'"
+          echo "Rezultat testa: alg=${{ matrix.algoritem }}, vzorec=${{ matrix.vzorec }}"
           cat out.txt

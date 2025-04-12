@@ -3,12 +3,11 @@ name: Deploy to DockerHub
 on:
   workflow_run:
     workflows: ["28570 Test"]
-    types:
-      - completed
+    types: [completed]
 
 jobs:
   deploy:
-    needs: 28570 Test
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: self-hosted
 
     env:
@@ -16,26 +15,26 @@ jobs:
       VERSION_TAG: ${{ github.sha }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Login to DockerHub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-    - name: Build and Push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        push: true
-        tags: |
-          ${{ env.IMAGE_NAME }}:latest
-          ${{ env.IMAGE_NAME }}:${{ env.VERSION_TAG }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ env.VERSION_TAG }}
 
-    - name: Show image pushed
-      run: echo "Image $IMAGE_NAME with tag $VERSION_TAG was pushed to DockerHub."
+      - name: Confirm push
+        run: echo "Image $IMAGE_NAME:$VERSION_TAG pushed successfully"
