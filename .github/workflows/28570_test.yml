@@ -18,7 +18,6 @@ jobs:
       - name: Preveri, če obstajajo testne skripte
         id: preveri
         run: |
-          if [ -d "tests" ]; then
             if [ -f "tests/test1.txt" ]; then
               echo "Testne skripte obstajajo."
               echo "obstajajo=true" >> $GITHUB_OUTPUT
@@ -26,10 +25,6 @@ jobs:
               echo "napaka: Testne skripte manjkajo." > napaka.txt
               echo "obstajajo=false" >> $GITHUB_OUTPUT
             fi
-          else
-            echo "napaka: Mapa 'tests' ne obstaja." > napaka.txt
-            echo "obstajajo=false" >> $GITHUB_OUTPUT
-          fi
 
       - name: Shranjevanje napake kot artefakt
         if: steps.preveri.outputs.obstajajo == 'false'
