@@ -33,6 +33,7 @@ jobs:
           name: napaka
           path: napaka.txt
 
+
   izvajanje-testov:
     needs: preveri-teste
     if: needs.preveri-teste.outputs.testi-obstajajo == 'true'
