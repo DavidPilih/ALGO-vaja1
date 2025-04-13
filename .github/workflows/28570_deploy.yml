@@ -37,5 +37,6 @@ jobs:
           ${{ env.IMAGE_NAME }}:latest
           ${{ env.IMAGE_NAME }}:${{ env.VERSION_TAG }}
 
+
     - name: Show image pushed
       run: echo "Image $IMAGE_NAME with tag $VERSION_TAG was pushed to DockerHub."
