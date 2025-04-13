@@ -33,11 +33,10 @@ jobs:
           name: napaka
           path: napaka.txt
 
-
   izvajanje-testov:
     needs: preveri-teste
     if: needs.preveri-teste.outputs.testi-obstajajo == 'true'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -48,6 +47,9 @@ jobs:
     steps:
       - name: Checkout kode
         uses: actions/checkout@v4
+
+      - name: Namesti build orodja
+        run: sudo apt-get update && sudo apt-get install -y g++
 
       - name: Prevedi program
         run: g++ -o algoritmi main.cpp
